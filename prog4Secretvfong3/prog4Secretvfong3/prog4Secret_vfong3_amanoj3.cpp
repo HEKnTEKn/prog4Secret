@@ -7,6 +7,7 @@
 //include libraries, define global variables,set namespace to reduce cout/in redundancy
 #include <cstdio>
 #include <cstring>
+#include <string>
 #include <cstdlib>
 #include <vector>
 #include <iostream>
@@ -30,15 +31,15 @@ void displayInformationAndInstructions(void)   //function will display programme
 
 
 //TODO: find out how to make character arrays correct number of elements for text file
-void analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the number of strings, as well as what they are
+int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the number of strings, as well as what they are. returns number of characters in file (including added '\0')
 {
 	int i = 0;
 	int j = 0;
 	int wordCount = 1;
+	int keyCharacterCount = 0;
 	int keyIndex[2];
 
 	char tempChar = 0;
-
 
 	while (fscanf(txtFile, "%c", &tempChar) != EOF)
 	{
@@ -46,39 +47,21 @@ void analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numb
 
 		if (keyArray[i] == ' ')
 		{
-			keyIndex[j] = i;
-			j++;
+			//j++;
 			wordCount++;
 		}
 		i++;
 	}
-
-	cout << "Read in " << wordCount << " keyWords, which are: ";
-	i = 0;
-
-	while (keyArray[i] != ' ')
-	{
-		cout << keyArray[i];
-		i++;
-	}
-	cout << ' ';
-
+	keyArray[i] = '\0';
+	keyCharacterCount++;
 	
-/*	for (int i = 0; i < (wordCount - 1);i++)
-	{
-		while (keyArray[keyIndex[j]] != ' ')
-		{
-			cout << keyArray[keyIndex[j] + 1];
-
-			j++;
-		}
-	}
-	*/
-	return;
+	cout << "Read in " << wordCount << " keyWords, which are: " << keyArray;
+	
+	return keyCharacterCount;
 }
 
-
-void analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the number of strings, as well as what they are
+//TODO: find out how to make character arrays correct number of elements for text file
+int analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the number of strings, as well as what they are. Returns number of characters in taken string
 {
 	int i = 0;
 	int characterCount = 0;
@@ -94,7 +77,7 @@ void analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets th
 
 	cout << "\n\nRead in " << characterCount << " cipherText characters \n\n";
 	
-	return;
+	return characterCount;
 }
 
 int main()
@@ -105,8 +88,8 @@ int main()
 	
 	int i = 0;
 	int j = 0;
-	int numCharInKey = 0;
-	int numCharInCipher = 0;
+	int keyCharacterCount = 0;
+	int cipherCharacterCount = 0;
 	int numColumns = 0;
 
 	char keyArray[150];
@@ -138,8 +121,8 @@ int main()
 
 	numColumns = 13;
 
-	analyzeKey(keyTXT, keyArray);
-	analyzeCipher(cipherTXT, cipherArray);
+	keyCharacterCount = analyzeKey(keyTXT, keyArray);
+	cipherCharacterCount = analyzeCipher(cipherTXT, cipherArray);
 	
 	
 	
