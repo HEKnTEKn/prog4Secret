@@ -9,16 +9,14 @@
 #include <cstring>
 #include <string>
 #include <cstdlib>
-#include <vector>
 #include <iostream>
 using namespace std;
-#define MAX_WORD_SIZE 30
 
 void displayInformationAndInstructions(void)   //function will display programmer information of the program.
 {
 	cout << "Welcome to the decoding program, where hidden messages are found inside of a text file. \n";
 	cout << "\n";
-	
+
 	cout << "Author: Victor Fong & Aswin Manoj \n";
 	cout << "Assignment : #4, Secret \n";
 	cout << "TA : Nianzu Ma, Tues 4PM \n";
@@ -54,9 +52,9 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 	}
 	keyArray[i] = '\0';
 	keyCharacterCount++;
-	
+
 	cout << "Read in " << wordCount << " keyWords, which are: " << keyArray;
-	
+
 	return keyCharacterCount;
 }
 
@@ -76,7 +74,7 @@ int analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the
 	}
 
 	cout << "\n\nRead in " << characterCount << " cipherText characters \n\n";
-	
+
 	return characterCount;
 }
 
@@ -85,7 +83,7 @@ int main()
 // initialize important variables
 	FILE* cipherTXT = NULL;
 	FILE* keyTXT = NULL;
-	
+
 	int i = 0;
 	int j = 0;
 	int keyCharacterCount = 0;
@@ -97,7 +95,7 @@ int main()
 	char tempChar = ' ';
 
 	displayInformationAndInstructions();
-    
+
 //set files to corresponding txt file
 	keyTXT = fopen("key.txt", "r");
 	if (keyTXT == NULL)
@@ -105,7 +103,7 @@ int main()
 		cout << "Could not open key.\n";
 		return -1;	//-1 indicates error
 	}
-	
+
 	/*while (fscanf(keyTXT, "%c", &tempChar) != EOF)	//get number of characters in key
 	{ numCharInKey++; }*/
 
@@ -115,7 +113,7 @@ int main()
 		cout << "Could not open cipher.\n";
 		return -1;	//-1 indicates error
 	}
-	
+
 	/*while (fscanf(cipherTXT, "%c", &tempChar) != EOF)		//get number of characters in cipher
 	{ numCharInCipher++; }*/
 
@@ -123,10 +121,10 @@ int main()
 
 	keyCharacterCount = analyzeKey(keyTXT, keyArray);
 	cipherCharacterCount = analyzeCipher(cipherTXT, cipherArray);
-	
-	
-	
-	
-	
+
+
+
+
+
 	return 0;
 }
