@@ -35,63 +35,43 @@ void displayInformationAndInstructions(void)   //function will display programme
 int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the number of strings, as well as what they are. returns number of characters in file (including added '\0')
 {
 	int i = 0;
-	int j = 0;
+	int j = 1;
 	int wordCount = 1;
 	int keyCharacterCount = 0;
+	int keyArrayIndex[MAX_WORDS_IN_KEY] = { NULL };
+	keyArrayIndex[0] = 0;
 	int length = 0;
 	
-	char *pSpace = NULL;
-    char *pCurrent;
 	char tempChar = 0;
-	char keyWords[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };
+	char words[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };
+	char* arrayPointer;
 	
-
-
-
-
 	while (fscanf(txtFile, "%c", &tempChar) != EOF)
 	{
 		keyArray[i] = tempChar;
 
 		if (keyArray[i] == ' ')
-		{ wordCount++; }
+		{
+			keyArray[i] = '\0';
+			wordCount++;
+			keyArrayIndex[j] = (i + 1);		//stores the position of the next word in keyArray into this index
+			j++;
+		}
 		i++;
 		keyCharacterCount++;
 	}
-	keyArray[i] = '\0';
-
-//Find the address of the first space
-    pSpace = strchr( keyArray, ' ');
-//Find out how many characters are between the space and the beginning of the array
-    length = pSpace - keyArray;
-//Copy that number of charactes into word1
-    strncpy( keyWords[0], keyArray, length);
-//Display the first word that has been found
-	cout << "Read in " << wordCount << " keyWords, which are:\n"
-		 << keyWords[0];
-     
-	for (int i = 1; i < wordCount; i++)
+	
+	cout << "Read in " << wordCount << " keyWords, which are:\n\n";
+	j = 0;
+	for (int i = 0; i < wordCount; i++)
 	{
-		pCurrent = pSpace + 1;
-		pSpace = strchr(pCurrent, ' ');
-		length = pSpace - pCurrent;
-		strncpy( keyWords[i], pCurrent, length);
-	//Display the second word that has been found
-		printf("%s\n", keyWords[i]);
+		arrayPointer = &keyArray[keyArrayIndex[j]];
+		length = strnlen(arrayPointer, MAX_WORD_SIZE);
+		cout << arrayPointer  << "\n";
+		j++;
 	}
-
 	
-	
-	
-/*	sscanf(keyArray, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", word1, word2, word3, word4, word5, word6, word7, word8, word9, word10, word11, word12, word13, word14, word15, word16, word17, word18, word19, word20);
-	cout << "Read in " << wordCount << " keyWords, which are:\n" << word1  << "\n" << word2  << "\n" << word3  << "\n" << word4  << "\n" << word5  << "\n"
-		 << word6  << "\n" << word7  << "\n" << word8  << "\n" << word9  << "\n" << word10  << "\n"
-		 << word11  << "\n" << word12  << "\n" << word13  << "\n" << word14  << "\n" << word15 << "\n"
-		 << word16  << "\n" << word17  << "\n" << word18  << "\n" << word19 << word20;
 
-	cout << &word1 << "\n" << &word2;
-
-	*/
 	return keyCharacterCount;
 }
 
@@ -134,7 +114,7 @@ void checkForX(char input) {	//function that takes character variable and checks
 
 	if (input == 'X' || input == 'x')
 	{
-		cout << ".       .      .     .    .   .  . .Thanks for playing!. .  .   .    .     .      .       .\n\n";
+		cout << "----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
 		exit(1);
 	}
 	return;
@@ -176,7 +156,7 @@ int main()
 	char input = ' ';
 
 	displayInformationAndInstructions();
-
+	
 //set files to corresponding txt file
 	keyTXT = fopen("key.txt", "r");
 	if (keyTXT == NULL)
