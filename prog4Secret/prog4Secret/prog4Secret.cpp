@@ -175,9 +175,6 @@ int main()
 		return -1;	//-1 indicates error
 	}
 
-	/*while (fscanf(cipherTXT, "%c", &tempChar) != EOF)		//get number of characters in cipher
-	{ numCharInCipher++; }*/
-
 	numColumns = 13;
 
 	keyCharacterCount = analyzeKey(keyTXT, keyArray);
