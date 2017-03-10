@@ -58,6 +58,7 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 	return keyCharacterCount;
 }
 
+
 //TODO: find out how to make character arrays correct number of elements for text file
 int analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the number of strings, as well as what they are. Returns number of characters in taken string
 {
@@ -78,6 +79,49 @@ int analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the
 	return characterCount;
 }
 
+
+char promptForChoiceAndScanForSelection() {
+	char selection = ' ';
+
+	cout << "Choose from the following options:\n"
+		 << "	1. Display a particular sized table\n"
+		 << "	2. Find all matching key word phrases\n"
+		 << "	X. Exit the program\n"
+		 <<	"Enter your choice -> "; cin >> selection;
+
+	return selection;
+}
+
+
+//checks input for an x or X that will later quit program
+void checkForX(char input) {	//function that takes character variable and checks for for 'x' or 'X'. if true then the function will exit the prgram.
+
+	if (input == 'X' || input == 'x')
+	{
+		cout << ".       .      .     .    .   .  . .Thanks for playing!. .  .   .    .     .      .       .\n\n";
+		exit(1);
+	}
+	return;
+}
+
+
+void printWords(char* cipherArray, int cipherCharacterCount) {
+
+// printf("%d", len);
+    for (int i = 0; i < cipherCharacterCount; i++)
+	{
+        if (cipherArray[i] == ' ')
+		{
+            cout << "\n";
+        }
+		else
+		{
+            cout << cipherArray[i];
+        }
+    }
+}
+
+
 int main()
 {
 // initialize important variables
@@ -93,6 +137,7 @@ int main()
 	char keyArray[150];
 	char cipherArray[500];
 	char tempChar = ' ';
+	char input = ' ';
 
 	displayInformationAndInstructions();
 
@@ -122,9 +167,9 @@ int main()
 	keyCharacterCount = analyzeKey(keyTXT, keyArray);
 	cipherCharacterCount = analyzeCipher(cipherTXT, cipherArray);
 
+	input = promptForChoiceAndScanForSelection();
 
-
-
+	checkForX(input);
 
 	return 0;
 }
