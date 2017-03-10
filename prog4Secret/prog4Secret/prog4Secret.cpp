@@ -43,7 +43,7 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 	int length = 0;
 	
 	char tempChar = 0;
-	char words[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };
+	char words[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };		//TODO: FIND A WAY TO SAVE THE SINGLE WORD FROM KEY ARRAY (AT TIME OF POINTER SEEMS TO WORK) INTO THIS ARRAY. WE NEED IT TO CHECK THE TABLE
 	char* arrayPointer;
 	
 	while (fscanf(txtFile, "%c", &tempChar) != EOF)
@@ -76,7 +76,7 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 }
 
 
-int analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the number of strings, as well as what they are. Returns number of characters in taken string
+int analyzeCipher(FILE* txtFile, char *cipherText) //takes in file and gets the number of strings, as well as what they are. Returns number of characters in taken string
 {
 	int i = 0;
 	int characterCount = 0;
@@ -85,12 +85,12 @@ int analyzeCipher(FILE* txtFile, char *cipherArray) //takes in file and gets the
 
 	while (fscanf(txtFile, "%c", &tempChar) != EOF)
 	{
-		cipherArray[i] = tempChar;
+		cipherText[i] = tempChar;
 		characterCount++;
 		i++;
 	}
 
-	cout << "\n\nRead in " << characterCount << " cipherText characters \n\n";
+	cout << "\n\nRead in " << characterCount << " cipherText characters which are:\n\n\n" << cipherText << "\n\n\n";
 
 	return characterCount;
 }
@@ -109,7 +109,7 @@ char promptForChoiceAndScanForSelection() {
 }
 
 
-//checks input for an x or X that will later quit program
+//checks input for an x or X that will quit program
 void checkForX(char input) {	//function that takes character variable and checks for for 'x' or 'X'. if true then the function will exit the prgram.
 
 	if (input == 'X' || input == 'x')
@@ -121,18 +121,18 @@ void checkForX(char input) {	//function that takes character variable and checks
 }
 
 
-void printWords(char* cipherArray, int cipherCharacterCount) {
+void printWords(char* cipherText, int cipherCharacterCount) {
 
 // printf("%d", len);
     for (int i = 0; i < cipherCharacterCount; i++)
 	{
-        if (cipherArray[i] == ' ')
+        if (cipherText[i] == ' ')
 		{
             cout << "\n";
         }
 		else
 		{
-            cout << cipherArray[i];
+            cout << cipherText[i];
         }
     }
 }
@@ -151,7 +151,7 @@ int main()
 	int numColumns = 0;
 
 	char keyArray[MAX_WORDS_IN_KEY * MAX_WORD_SIZE] = { NULL };
-	char cipherArray[MAX_CHARACTERS_IN_CIPHER] = { NULL };
+	char cipherText[MAX_CHARACTERS_IN_CIPHER] = { NULL };
 	char tempChar = ' ';
 	char input = ' ';
 
@@ -165,9 +165,6 @@ int main()
 		return -1;	//-1 indicates error
 	}
 
-	/*while (fscanf(keyTXT, "%c", &tempChar) != EOF)	//get number of characters in key
-	{ numCharInKey++; }*/
-
 	cipherTXT = fopen("cipher.txt", "r");
 	if (cipherTXT == NULL)
 	{
@@ -178,7 +175,7 @@ int main()
 	numColumns = 13;
 
 	keyCharacterCount = analyzeKey(keyTXT, keyArray);
-	cipherCharacterCount = analyzeCipher(cipherTXT, cipherArray);
+	cipherCharacterCount = analyzeCipher(cipherTXT, cipherText);
 
 	input = promptForChoiceAndScanForSelection();
 
