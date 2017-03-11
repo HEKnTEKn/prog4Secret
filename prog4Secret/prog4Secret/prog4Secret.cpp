@@ -36,14 +36,15 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 {
 	int i = 0;
 	int j = 1;
+	int characterCount = 0;
 	int wordCount = 1;
-	int keyCharacterCount = 0;
 	int keyArrayIndex[MAX_WORDS_IN_KEY] = { NULL };
 	keyArrayIndex[0] = 0;
 	int length = 0;
 	
 	char tempChar = 0;
-	char words[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };		//TODO: FIND A WAY TO SAVE THE SINGLE WORD FROM KEY ARRAY (AT TIME OF POINTER SEEMS TO WORK) INTO THIS ARRAY. WE NEED IT TO CHECK THE TABLE
+	//char words[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };		//TODO: FIND A WAY TO SAVE THE SINGLE WORD FROM KEY ARRAY (AT TIME OF POINTER SEEMS TO WORK) INTO THIS ARRAY. WE NEED IT TO CHECK THE TABLE
+	
 	char* arrayPointer;
 	
 	while (fscanf(txtFile, "%c", &tempChar) != EOF)
@@ -58,7 +59,7 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 			j++;
 		}
 		i++;
-		keyCharacterCount++;
+		characterCount++;
 	}
 	
 	cout << "Read in " << wordCount << " keyWords, which are:\n\n";
@@ -72,7 +73,7 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 	}
 	
 
-	return keyCharacterCount;
+	return wordCount;
 }
 
 
@@ -109,33 +110,54 @@ char promptForChoiceAndScanForSelection() {
 }
 
 
-//checks input for an x or X that will quit program
-void checkForX(char input) {	//function that takes character variable and checks for for 'x' or 'X'. if true then the function will exit the prgram.
-
-	if (input == 'X' || input == 'x')
+void reactToSelection(char input, int *errCode)
 	{
-		cout << "----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
-		exit(1);
+		
+		if (input == 'X' || input == 'x')
+		{
+			cout << "\n----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
+			exit(1);
+		}
+		else if (input == '1')
+		{
+			cout << "\nEnter the row size: "; cin >> input; cout << "\n\n";
+		}
+		else if (input != '2')
+		{
+			cout << "\nERROR: Input invalid, please try again! ";
+			*errCode = 1;
+		}
+		return;
 	}
-	return;
-}
 
 
-void printWords(char* cipherText, int cipherCharacterCount) {
+/* void split(char* sent, char words[][MAX_WORD_SIZE]) {
+    int sentLen = length(sent);
 
-// printf("%d", len);
-    for (int i = 0; i < cipherCharacterCount; i++)
-	{
-        if (cipherText[i] == ' ')
-		{
-            cout << "\n";
+    int i = 0, j = 0;
+    int sentIndex;
+    for (sentIndex = 0; sentIndex < sentLen; sentIndex++) {
+        if (sent[sentIndex] != ' ') {
+            words[i][j] = sent[sentIndex];
+            j++;
+        } else {
+            words[i][j] = '\0';
+            i++;
+            j = 0;
         }
-		else
-		{
-            cout << cipherText[i];
+        // special case for the last word.
+        if (sentIndex == sentLen - 1) {
+            words[i][j] = '\0';
         }
     }
 }
+
+void print2DWords(int wordNum, char array[][MAX_WORD_SIZE]) {
+    int i; 
+    for (i = 0; i < wordNum; i++) {
+        printf("%s\n", array[i]);
+    }
+}*/
 
 
 int main()
@@ -144,11 +166,13 @@ int main()
 	FILE* cipherTXT = NULL;
 	FILE* keyTXT = NULL;
 
+	int errCode = -1;
 	int i = 0;
 	int j = 0;
 	int keyCharacterCount = 0;
+	int keyWordCount = 0;
 	int cipherCharacterCount = 0;
-	int numColumns = 0;
+	int cipherWordCount = 0;
 
 	char keyArray[MAX_WORDS_IN_KEY * MAX_WORD_SIZE] = { NULL };
 	char cipherText[MAX_CHARACTERS_IN_CIPHER] = { NULL };
@@ -172,14 +196,16 @@ int main()
 		return -1;	//-1 indicates error
 	}
 
-	numColumns = 13;
+	analyzeKey(keyTXT, keyArray);
+	analyzeCipher(cipherTXT, cipherText);
 
-	keyCharacterCount = analyzeKey(keyTXT, keyArray);
-	cipherCharacterCount = analyzeCipher(cipherTXT, cipherText);
-
-	input = promptForChoiceAndScanForSelection();
-
-	checkForX(input);
+	do  {
+		errCode = -1;
+		input = promptForChoiceAndScanForSelection();
+		reactToSelection(input, &errCode);
+		}  while (errCode == 1);
+	
+	
 
 	return 0;
 }
