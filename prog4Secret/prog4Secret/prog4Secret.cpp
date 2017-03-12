@@ -110,54 +110,37 @@ char promptForChoiceAndScanForSelection() {
 }
 
 
-void reactToSelection(char input, int *errCode)
+void wrapForN(char *cipherText, char n)
+{
+
+	return;
+}
+
+
+void reactToSelection(char * cipherText, char input, int *errCode)
 	{
 		
-		if (input == 'X' || input == 'x')
+		if (input == 'X' || input == 'x')		//x to exit program
 		{
 			cout << "\n----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
 			exit(1);
 		}
-		else if (input == '1')
+		else if (input == '1')		//1 to display a certain row
 		{
 			cout << "\nEnter the row size: "; cin >> input; cout << "\n\n";
+			wrapForN(cipherText, input);
 		}
-		else if (input != '2')
+		else if (input != '2')		//only remaining option is 2. if not 2 input error has occurred.
 		{
 			cout << "\nERROR: Input invalid, please try again! ";
 			*errCode = 1;
 		}
+		else		//if all other if/else if statements fail input must be 2 and will therefore decode cipher for all rows 13 -> 132
+		{
+		
+		}
 		return;
 	}
-
-
-/* void split(char* sent, char words[][MAX_WORD_SIZE]) {
-    int sentLen = length(sent);
-
-    int i = 0, j = 0;
-    int sentIndex;
-    for (sentIndex = 0; sentIndex < sentLen; sentIndex++) {
-        if (sent[sentIndex] != ' ') {
-            words[i][j] = sent[sentIndex];
-            j++;
-        } else {
-            words[i][j] = '\0';
-            i++;
-            j = 0;
-        }
-        // special case for the last word.
-        if (sentIndex == sentLen - 1) {
-            words[i][j] = '\0';
-        }
-    }
-}
-
-void print2DWords(int wordNum, char array[][MAX_WORD_SIZE]) {
-    int i; 
-    for (i = 0; i < wordNum; i++) {
-        printf("%s\n", array[i]);
-    }
-}*/
 
 
 int main()
@@ -202,7 +185,7 @@ int main()
 	do  {
 		errCode = -1;
 		input = promptForChoiceAndScanForSelection();
-		reactToSelection(input, &errCode);
+		reactToSelection(cipherText, input, &errCode);
 		}  while (errCode == 1);
 	
 
