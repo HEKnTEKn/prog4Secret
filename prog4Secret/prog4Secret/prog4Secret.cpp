@@ -205,7 +205,7 @@ int main()
 		reactToSelection(input, &errCode);
 		}  while (errCode == 1);
 	
-	
+
 
 	return 0;
 }
