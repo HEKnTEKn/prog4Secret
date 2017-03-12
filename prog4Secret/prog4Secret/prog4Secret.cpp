@@ -118,29 +118,29 @@ void wrapForN(char *cipherText, char n)
 
 
 void reactToSelection(char * cipherText, char input, int *errCode)
+{
+		
+	if (input == 'X' || input == 'x')		//x to exit program
 	{
-		
-		if (input == 'X' || input == 'x')		//x to exit program
-		{
-			cout << "\n----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
-			exit(1);
-		}
-		else if (input == '1')		//1 to display a certain row
-		{
-			cout << "\nEnter the row size: "; cin >> input; cout << "\n\n";
-			wrapForN(cipherText, input);
-		}
-		else if (input != '2')		//only remaining option is 2. if not 2 input error has occurred.
-		{
-			cout << "\nERROR: Input invalid, please try again! ";
-			*errCode = 1;
-		}
-		else		//if all other if/else if statements fail input must be 2 and will therefore decode cipher for all rows 13 -> 132
-		{
-		
-		}
-		return;
+		cout << "\n----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
+		exit(1);
 	}
+	else if (input == '1')		//1 to display a certain row
+	{
+		cout << "\nEnter the row size: "; cin >> input; cout << "\n\n";
+		wrapForN(cipherText, input);
+	}
+	else if (input != '2')		//only remaining option is 2. if not 2 input error has occurred.
+	{
+		cout << "\nERROR: Input invalid, please try again! ";
+		*errCode = 1;
+	}
+	else		//if all other if/else if statements fail input must be 2 and will therefore decode cipher for all rows 13 -> 132
+	{
+	
+	}
+	return;
+}
 
 
 int main()
