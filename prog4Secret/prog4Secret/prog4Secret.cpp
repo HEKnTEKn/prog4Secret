@@ -110,8 +110,10 @@ char promptForChoiceAndScanForSelection() {
 }
 
 
-void wrapForN(char *cipherText, char n)
+//TODO: DO THIS
+void wrapForN(char *cipherText, char n)			
 {
+	
 
 	return;
 }
