@@ -20,14 +20,14 @@ using namespace std;
 
 void displayInformationAndInstructions(void)   //function will display programmer information of the program.
 {
-	cout << "Welcome to the decoding program, where hidden messages are found inside of a text file. \n";
-	cout << "\n";
+	cout << "Welcome to the decoding program, where hidden messages are found inside of a text file. \n"
+		 << "\n"
 
-	cout << "Author: Victor Fong & Aswin Manoj \n";
-	cout << "Assignment : #4, Secret \n";
-	cout << "TA : Nianzu Ma, Tues 4PM \n";
-	cout << "Feb 19, 2017 \n";
-	cout << "\n";
+		 << "Author: Victor Fong & Aswin Manoj \n"
+		 << "Assignment : #4, Secret \n"
+		 << "TA : Nianzu Ma, Tues 4PM \n"
+		 << "Feb 19, 2017 \n"
+		 << "\n";
 
 	return;
 }
@@ -202,14 +202,16 @@ int main()
 	displayInformationAndInstructions();
 
 //set files to corresponding txt file
-	keyTXT = fopen("key.txt", "r");
+	//keyTXT = fopen("keys.txt", "r");
+	keyTXT = fopen("complxKeys.txt", "r");
 	if (keyTXT == NULL)
 	{
 		cout << "Could not open key.\n";
 		return -1;	//-1 indicates error
 	}
 
-	cipherTXT = fopen("cipher.txt", "r");
+	//cipherTXT = fopen("cipher.txt", "r");
+	cipherTXT = fopen("complxCipher.txt", "r");
 	if (cipherTXT == NULL)
 	{
 		cout << "Could not open cipher.\n";
@@ -218,6 +220,9 @@ int main()
 
 	keyWordCount = analyzeKey(keyTXT, keyArray);
 	cipherCharacterCount = analyzeCipher(cipherTXT, cipherText);
+
+	fclose(cipherTXT);
+	fclose(keyTXT);
 
 	do
 	{
