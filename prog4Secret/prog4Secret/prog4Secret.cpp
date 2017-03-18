@@ -33,9 +33,13 @@ void displayInformationAndInstructions(void)   //function will display programme
 }
 
 
-void displayCipher(char *cipherText)
+void displayTable(char *cipherText, int characterCount)
 {
-	cout << cipherText << "\n\n\n";
+	for (int i = 0; i < characterCount; i++)
+	{
+		cout << cipherText[i];
+	}
+	cout << "\n\n\n";
 
 	return;
 }
@@ -100,7 +104,7 @@ int analyzeCipher(FILE* txtFile, char *cipherText) //takes in file and gets the 
 	}
 
 	cout << "\n\nRead in " << characterCount << " cipherText characters which are:\n\n\n";
-	displayCipher(cipherText);
+	displayTable(cipherText, characterCount);
 
 	return characterCount;
 }
@@ -109,7 +113,6 @@ int analyzeCipher(FILE* txtFile, char *cipherText) //takes in file and gets the 
 char promptForChoiceAndScanForSelection()
 {
 	char selection = ' ';
-
 	cout << "Choose from the following options:\n"
 		<< "	1. Display a particular sized table\n"
 		<< "	2. Find all matching key word keyArrays\n"
@@ -119,24 +122,23 @@ char promptForChoiceAndScanForSelection()
 	return selection;
 }
 
-
+//TODO: make a function that will restore cipherText to it's original state.
 void wrapForN(char *cipherText, int characterCount, int n)
 {
 	char cipherTextBuffer[MAX_CHARACTERS_IN_CIPHER] = { NULL };
 	int i = 0, j = 0;
 	for (int i = 0; i < characterCount; i++)
 	{
-		if (i == 0 || (i % (n)) != 0)
+		if (i == 0 || (i % n) != 0)
 		{
-			cipherTextBuffer[i] = cipherText[j];
+			cipherTextBuffer[j] = cipherText[i];
 			j++;
 		}
-		else if ((i % (n)) == 0)
+		else if ((i % n) == 0)
 		{
-			cipherTextBuffer[i] = '\n';
-			//i++;
-			cipherTextBuffer[i + 1] = cipherText[j];
-			i++;
+			cipherTextBuffer[j] = '\n';
+			j++;
+			cipherTextBuffer[j] = cipherText[i];
 			j++;
 		}
 	}
@@ -165,7 +167,7 @@ void reactToSelection(char * cipherText, char input, int characterCount, int *er
 	{
 		cout << "\nEnter the row size: "; cin >> wrapInput; cout << "\n\n";
 		wrapForN(cipherText, characterCount, wrapInput);
-		displayCipher(cipherText);
+		displayTable(cipherText, characterCount);
 		*errCode = 1;
 	}
 	else if (input != '2')		//only remaining option is 2. if not 2 input error has occurred.
@@ -202,16 +204,16 @@ int main()
 	displayInformationAndInstructions();
 
 //set files to corresponding txt file
-	//keyTXT = fopen("keys.txt", "r");
-	keyTXT = fopen("complxKeys.txt", "r");
+	keyTXT = fopen("keys.txt", "r");
+	//keyTXT = fopen("complxKeys.txt", "r");
 	if (keyTXT == NULL)
 	{
 		cout << "Could not open key.\n";
 		return -1;	//-1 indicates error
 	}
 
-	//cipherTXT = fopen("cipher.txt", "r");
-	cipherTXT = fopen("complxCipher.txt", "r");
+	cipherTXT = fopen("cipher.txt", "r");
+	//cipherTXT = fopen("complxCipher.txt", "r");
 	if (cipherTXT == NULL)
 	{
 		cout << "Could not open cipher.\n";
