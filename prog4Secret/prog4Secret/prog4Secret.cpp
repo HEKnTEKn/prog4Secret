@@ -56,8 +56,7 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 	int length = 0;
 
 	char tempChar = 0;
-	//char words[MAX_WORDS_IN_KEY][MAX_WORD_SIZE] = { NULL };		//TODO: FIND A WAY TO SAVE THE SINGLE WORD FROM KEY ARRAY (AT TIME OF POINTER SEEMS TO WORK) INTO THIS ARRAY. WE NEED IT TO CHECK THE TABLE
-
+	
 	char* arrayPointer;
 
 	while (fscanf(txtFile, "%c", &tempChar) != EOF)
@@ -113,7 +112,7 @@ int analyzeCipher(FILE* txtFile, char *cipherText) //takes in file and gets the 
 char promptForChoiceAndScanForSelection()
 {
 	char selection = ' ';
-	cout << "Choose from the following options:\n"
+	cout<< "Choose from the following options:\n"
 		<< "	1. Display a particular sized table\n"
 		<< "	2. Find all matching key word keyArrays\n"
 		<< "	X. Exit the program\n"
@@ -122,7 +121,19 @@ char promptForChoiceAndScanForSelection()
 	return selection;
 }
 
-//TODO: make a function that will restore cipherText to it's original state.
+
+void transferArray(char *arrayFrom, char *arrayTo)
+{
+	
+	for (int i = 0; i < strlen(arrayFrom); i++)
+	{
+		arrayTo[i] = arrayFrom[i];
+	}
+
+	return;
+}
+
+
 void wrapForN(char *cipherText, int characterCount, int n)
 {
 	char cipherTextBuffer[MAX_CHARACTERS_IN_CIPHER] = { NULL };
@@ -154,11 +165,19 @@ void wrapForN(char *cipherText, int characterCount, int n)
 }
 
 
-void reactToSelection(char * cipherText, char input, int characterCount, int *errCode)
+void checkForMatch(char *wrappedText, int characterCount)
+{
+
+
+	return;
+}
+
+
+void reactToSelection(char *cipherText, char *storedCipherText, char input, int characterCount, int *errCode)
 {
 	int wrapInput = 0;
 
-	if (input == 'X' || input == 'x')		//x to exit program
+	if (input == 'X' || input == 'x')		// x to exit program
 	{
 		cout << "\n----------------------.       .     .   Exiting Program. Thank You For Your Time   .     .       .----------------------\n\n";
 		exit(1);
@@ -166,8 +185,10 @@ void reactToSelection(char * cipherText, char input, int characterCount, int *er
 	else if (input == '1')		//1 to display a certain row
 	{
 		cout << "\nEnter the row size: "; cin >> wrapInput; cout << "\n\n";
+		transferArray(cipherText, storedCipherText);
 		wrapForN(cipherText, characterCount, wrapInput);
 		displayTable(cipherText, characterCount);
+		transferArray(storedCipherText, cipherText);
 		*errCode = 1;
 	}
 	else if (input != '2')		//only remaining option is 2. if not 2 input error has occurred.
@@ -177,7 +198,16 @@ void reactToSelection(char * cipherText, char input, int characterCount, int *er
 	}
 	else		//if all other if/else if statements fail input must be 2 and will therefore decode cipher for all rows 13 -> 132
 	{
+		for (int i = 13; i < 132; i++)
+		{
+			transferArray(cipherText, storedCipherText);
+			wrapForN(cipherText, characterCount, wrapInput);
+			checkForMatch(cipherText,characterCount);
+			transferArray(storedCipherText, cipherText);
+
+		}
 	}
+
 	return;
 }
 
@@ -198,6 +228,7 @@ int main()
 
 	char keyArray[MAX_WORDS_IN_KEY * MAX_WORD_SIZE] = { NULL };
 	char cipherText[MAX_CHARACTERS_IN_CIPHER] = { NULL };
+	char storedCipherText[MAX_CHARACTERS_IN_CIPHER] = { NULL };
 	char tempChar = ' ';
 	char input = ' ';
 
@@ -230,7 +261,7 @@ int main()
 	{
 		errCode = -1;
 		input = promptForChoiceAndScanForSelection();
-		reactToSelection(cipherText, input, cipherCharacterCount, &errCode);
+		reactToSelection(cipherText, storedCipherText, input, cipherCharacterCount, &errCode);
 	} while (errCode == 1);
 
 	return 0;
