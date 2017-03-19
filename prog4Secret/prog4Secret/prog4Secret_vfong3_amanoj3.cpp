@@ -6,8 +6,6 @@
 
 //include libraries, define global variables,set namespace to reduce cout/in redundancy
 #include <cstdio>
-#include <cstring>
-#include <string>
 #include <cstdlib>
 #include <iostream>
 using namespace std;
@@ -18,6 +16,17 @@ using namespace std;
 #define MAX_CHARACTERS_IN_CIPHER 17424
 
 
+int getLength(char *thingToCheck)	//ACCEPTS CHARACTER ARRAY !ONLY!
+{
+	int count = 0;
+	for (int i = 0; thingToCheck[i] != '\0'; i++)
+	{
+		count++;
+	}
+	return count;
+}
+
+
 void displayInformationAndInstructions(void)   //function will display programmer information of the program.
 {
 	cout << "Welcome to the decoding program, where hidden messages are found inside of a text file. \n"
@@ -26,14 +35,14 @@ void displayInformationAndInstructions(void)   //function will display programme
 		 << "Author: Victor Fong & Aswin Manoj \n"
 		 << "Assignment : #4, Secret \n"
 		 << "TA : Nianzu Ma, Tues 4PM \n"
-		 << "Feb 19, 2017 \n"
+		 << "March 18, 2017 \n"
 		 << "\n";
 
 	return;
 }
 
 
-void displayTable(char *cipherText, int characterCount)
+void displayTable(char *cipherText, int characterCount) // Shows a "table" containing the cipherText
 {
 	for (int i = 0; i < characterCount; i++)
 	{
@@ -45,15 +54,12 @@ void displayTable(char *cipherText, int characterCount)
 }
 
 
-int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the number of strings, as well as what they are. returns number of characters in file (including added '\0')
+int analyzeKey(FILE* txtFile, char *keyArray, int *keyArrayIndex) //takes in file and gets the number of strings, as well as what they are. returns number of characters in file (including added '\0')
 {
 	int i = 0;
 	int j = 1;
-	int characterCount = 0;
 	int wordCount = 1;
-	int keyArrayIndex[MAX_WORDS_IN_KEY] = { NULL };
 	keyArrayIndex[0] = 0;
-	int length = 0;
 
 	char tempChar = 0;
 	
@@ -71,17 +77,13 @@ int analyzeKey(FILE* txtFile, char *keyArray) //takes in file and gets the numbe
 			j++;
 		}
 		i++;
-		characterCount++;
 	}
 
 	cout << "Read in " << wordCount << " keyWords, which are:\n\n";
-	j = 0;
 	for (int i = 0; i < wordCount; i++)
 	{
-		arrayPointer = &keyArray[keyArrayIndex[j]];
-		length = strnlen(arrayPointer, MAX_WORD_SIZE);
+		arrayPointer = &keyArray[keyArrayIndex[i]];
 		cout << arrayPointer << "\n";
-		j++;
 	}
 
 	return wordCount;
@@ -109,7 +111,7 @@ int analyzeCipher(FILE* txtFile, char *cipherText) //takes in file and gets the 
 }
 
 
-char promptForChoiceAndScanForSelection()
+char promptForChoiceAndScanForSelection()  // Asks user to type in an option and the selection gets scanned
 {
 	char selection = ' ';
 	cout<< "Choose from the following options:\n"
@@ -122,7 +124,7 @@ char promptForChoiceAndScanForSelection()
 }
 
 
-void transferArray(char *arrayFrom, char *arrayTo)
+void transferArray(char *arrayFrom, char *arrayTo) // Helps you shift/transfer the placement of the characters in the cipherText in accordance with the row size given in the input
 {
 	
 	for (int i = 0; i < strlen(arrayFrom); i++)
@@ -134,7 +136,7 @@ void transferArray(char *arrayFrom, char *arrayTo)
 }
 
 
-void wrapForN(char *cipherText, int characterCount, int n)
+void wrapForN(char *cipherText, int characterCount, int n) // helps you wrap the text in accordance with the row size as mentioned in one of the options
 {
 	char cipherTextBuffer[MAX_CHARACTERS_IN_CIPHER] = { NULL };
 	int i = 0, j = 0;
@@ -165,17 +167,40 @@ void wrapForN(char *cipherText, int characterCount, int n)
 }
 
 
-void checkForMatch(char *wrappedText, int characterCount)
+void  findMatchHorz(char *wrappedText, char* keyArray, int *keyArrayIndex, int wordCount, int characterCount) // this function checks for matching key arrays using wrappedText
 {
+	int lettersFound = 0;
+	int wordFound = 0;
+	int index = 0;
+	int offset = 0;
+	int wordLength = 0;
 
+	while (wordFound == 0 && index < wordCount)	//for each WORD WHILE a word has not been found HORIZONTALLY
+		{
+			wordLength = getLength(keyArray + keyArrayIndex[index]);
+			for (int positionOfWrappedArray = 0; positionOfWrappedArray < characterCount; positionOfWrappedArray++)	//for each CHARACTER in CIPHERTEXT
+			{
+				if (wrappedText[positionOfWrappedArray] == keyArray[keyArrayIndex[index] + offset])	//if POSITION at WRAPPEDTEXT == [INDEX]th letter of KEYARRAY + THE NUMBER OF CHARS IN ORDER FOUND
+				{
+					cout << wrappedText[positionOfWrappedArray];
+					offset++;
+				}
+				else
+				{
+					
+				}
+			}
+			index++;
+		}
 
 	return;
 }
 
 
-void reactToSelection(char *cipherText, char *storedCipherText, char input, int characterCount, int *errCode)
+void reactToSelection(char *cipherText, char *storedCipherText, char *keyArray, int *keyArrayIndex, int wordCount, char input, int characterCount, int *errCode) // responds to selection from promptForChoice function and gives output based on what user types in
 {
 	int wrapInput = 0;
+	int wrapInputCheck = -1;
 
 	if (input == 'X' || input == 'x')		// x to exit program
 	{
@@ -184,28 +209,41 @@ void reactToSelection(char *cipherText, char *storedCipherText, char input, int 
 	}
 	else if (input == '1')		//1 to display a certain row
 	{
-		cout << "\nEnter the row size: "; cin >> wrapInput; cout << "\n\n";
-		transferArray(cipherText, storedCipherText);
-		wrapForN(cipherText, characterCount, wrapInput);
-		displayTable(cipherText, characterCount);
-		transferArray(storedCipherText, cipherText);
-		*errCode = 1;
+		do
+		{
+			cout << "\nEnter the row size: "; cin >> wrapInput; cout << "\n\n";
+
+			if (wrapInput >= 13 && wrapInput <= 132)
+			{
+			transferArray(cipherText, storedCipherText);
+			wrapForN(cipherText, characterCount, wrapInput);
+			displayTable(cipherText, characterCount);
+			transferArray(storedCipherText, cipherText);
+			*errCode = 1;
+			wrapInputCheck++;
+			}
+			else
+			{
+				cout << "\n!!! ERROR: INPUT MUST BE 13-132, PLEASE TRY AGAIN !!!\n\n\n";
+			}
+		} while (wrapInputCheck != 0);
+		
+		
 	}
-	else if (input != '2')		//only remaining option is 2. if not 2 input error has occurred.
+	else if (input == '2')		//if all other if/else if statements fail input must be 2 and will therefore decode cipher for all rows 13 -> 132
+	{
+		//for (int i = 13; i < 132; i++)
+		//{
+			transferArray(cipherText, storedCipherText);
+			wrapForN(cipherText, characterCount, 13);
+			findMatchHorz(cipherText, keyArray, keyArrayIndex, wordCount, characterCount);
+			transferArray(storedCipherText, cipherText);
+		//}
+	}
+	else		//only remaining option is 2. if not 2 input error has occurred.
 	{
 		cout << "\nERROR: Input invalid, please try again! ";
 		*errCode = 1;
-	}
-	else		//if all other if/else if statements fail input must be 2 and will therefore decode cipher for all rows 13 -> 132
-	{
-		for (int i = 13; i < 132; i++)
-		{
-			transferArray(cipherText, storedCipherText);
-			wrapForN(cipherText, characterCount, wrapInput);
-			checkForMatch(cipherText,characterCount);
-			transferArray(storedCipherText, cipherText);
-
-		}
 	}
 
 	return;
@@ -227,6 +265,8 @@ int main()
 	int cipherWordCount = 0;
 
 	char keyArray[MAX_WORDS_IN_KEY * MAX_WORD_SIZE] = { NULL };
+	int keyArrayIndex[MAX_WORDS_IN_KEY] = { NULL };
+	
 	char cipherText[MAX_CHARACTERS_IN_CIPHER] = { NULL };
 	char storedCipherText[MAX_CHARACTERS_IN_CIPHER] = { NULL };
 	char tempChar = ' ';
@@ -251,7 +291,7 @@ int main()
 		return -1;	//-1 indicates error
 	}
 
-	keyWordCount = analyzeKey(keyTXT, keyArray);
+	keyWordCount = analyzeKey(keyTXT, keyArray, keyArrayIndex);
 	cipherCharacterCount = analyzeCipher(cipherTXT, cipherText);
 
 	fclose(cipherTXT);
@@ -261,7 +301,7 @@ int main()
 	{
 		errCode = -1;
 		input = promptForChoiceAndScanForSelection();
-		reactToSelection(cipherText, storedCipherText, input, cipherCharacterCount, &errCode);
+		reactToSelection(cipherText, storedCipherText, keyArray, keyArrayIndex, keyWordCount, input, cipherCharacterCount, &errCode);
 	} while (errCode == 1);
 
 	return 0;
